@@ -1,8 +1,5 @@
 import sys
-# from queue import Queue, PriorityQueue
 from copy import copy, deepcopy
-# import time
-# start = time.time()
 
 input_filename = sys.argv[1]
 output_filename = sys.argv[2]
@@ -44,83 +41,6 @@ HASHtoKIND = {}
 HASHtoSHIP = dict()
 ALL_HASHES = set()  # equivalent to set(HASHtoSHIP), but just to make it faster.
 
-#
-# def kind_determiner(hs: int) -> str:
-#     """for debugging 고쳐"""
-#     s = ship_kind_num[1]
-#     d = ship_kind_num[2]
-#     c = ship_kind_num[3]
-#     if hs <= s:
-#         return '1'
-#     elif hs <= s+d:
-#         return '2'
-#     elif hs <= c+s+d:
-#         return '3'
-#     else:
-#         return '4'
-#
-# class Support(object):
-#     def __init__(self, decided: dict, additionald=None):
-#         self.variable_to_value = decided
-#         kindtopos = {'1':[], '2':[], '3':[], '4':[]}
-#         for vari in decided:
-#             kindtopos[kind_determiner(vari)].append(decided[vari][1])
-#         for each_kind in kindtopos:
-#             kindtopos[each_kind].sort()
-#         unique = ""
-#         for pos in additionald[1]:
-#             unique += str(pos)
-#         unique += '0'
-#         for kind in kindtopos:
-#             unique += kind
-#             for tup in kindtopos[kind]:
-#                 for pos in tup:
-#                     unique += str(pos)
-#         self.hashnum = int(unique)
-#         # self.additional = additionald[1]
-#
-#     def add_additional(self, additional_dict):
-#         self.additional = additional_dict
-#
-#     def __hash__(self):
-#         return self.hashnum
-#
-#     def __eq__(self, other):
-#         return self.hashnum == other.hashnum
-#
-#
-# def kind_determiner1(hs: int) -> str:
-#     """for debugging 고쳐"""
-#     s = ship_kind_num[1]
-#     d = ship_kind_num[2]
-#     c = ship_kind_num[3]
-#     if hs <= s:
-#         return 'Submarine'
-#     elif hs <= s+d:
-#         return 'Destroyer'
-#     elif hs <= c+s+d:
-#         return 'Cruiser'
-#     else:
-#         return 'Battleship'
-#
-#
-# class Support1(object):
-#     def __init__(self, decided: dict):
-#         self.variable_to_value = decided
-#         unique = ""
-#         sd = sorted(decided)
-#         for vari in sd:
-#             unique += str(kind_determiner(vari))
-#             for pos in decided[vari][1]:
-#                 unique += str(pos)
-#         self.hashnum = int(unique)
-#
-#     def __hash__(self):
-#         return self.hashnum
-#
-#     def __eq__(self, other):
-#         return self.hashnum == other.hashnum
-
 
 class Level(object):
     """ Level is a class that holds a current domain of this level.
@@ -135,13 +55,8 @@ class Level(object):
                 self.CurDoms[variable_hash] = copy(HASHtoSHIP[variable_hash].Dom)
         else:
             self.CurDoms = copy(CurDoms)  # inherit from parent level
-        # self.parent = parent
         self.row_dict = row_dict
         self.col_dict = col_dict
-        # self.cashed_supports = {c: set() for c in AllConstraints}
-        # # self.variables = variables  # 고쳐 이거 필요 없을 거 같애... 저 위에 한 번만 있으면.
-        # self.hashnum = lvl_counting[0]
-        # lvl_counting[0] += 1
 
     def remove_d_from_T(self, T: int, d: tuple):
         self.CurDoms[T].remove(d)
@@ -151,127 +66,15 @@ class Level(object):
             unassigned contains at least one element."""
         mrv = 0
         mrv_value = float('inf')
+        
         for var in unassigned:
             size = len(self.CurDoms[var])
             if size < mrv_value or (size <= mrv_value+5 and HASHtoKIND[var] > HASHtoKIND[mrv]):
                 mrv = var
                 mrv_value = size
-        # unassigned.remove(mrv)
+     
         return mrv
-        # mrv_value = float('inf')
-        # mrv = 0
-        # kindmrv = 0
-        # for var in unassigned:
-        #     kindvar = HASHtoKIND[var]
-        #     if kindvar > kindmrv:
-        #         kindmrv = kindvar
-        #         mrv = var
-        #         mrv_value = len(self.CurDoms[var])
-        #     elif kindvar == kindmrv:
-        #         size = len(self.CurDoms[var])
-        #         if size < mrv_value:
-        #             mrv = var
-        #             mrv_value = size
-        # return mrv
-
-        #     size = len(self.CurDoms[var])
-        #     if size < mrv_value or (size <= mrv_value+5 and var > mrv):
-        #         mrv = var
-        #         mrv_value = size
-        # # unassigned.remove(mrv)
-        # return mrv
-
-    # def erase_support(self, C: int, support: Support):
-    #     """
-    #     Remove the support as we have found it is not a valid support anymore
-    #     :param support: support to be removed in the self.cashed_support
-    #     :return:
-    #     """
-    #     self.cashed_supports[C].remove(support)
-    #
-    # def save_support(self, C: int, support: dict):
-    #     """
-    #     Save(add) the support as we have found this support
-    #     :param support:
-    #     :return:
-    #     """
-    #     self.cashed_supports[C].add(Support(support))
-    #
-    # def _is_support_valid(self, C, support: Support) -> bool:
-    #     """
-    #     Return True iff this saved support is still valid, i.e., each variable's
-    #     value is still in its current domain.
-    #     :param support: decided variable
-    #     :return: boolean
-    #     """
-    #     for v in support.variable_to_value:
-    #         if support.variable_to_value[v] not in self.CurDoms[v]:
-    #             self.erase_support(C, support)
-    #             return False
-    #     return True
-    #
-    # def find_current_support(self, C: int, decided: dict,
-    #                          unassigned: set = None):
-    #     """
-    #     :param unassigned:
-    #     :param decided:
-    #     :param C:
-    #     :return: boolean if there's such support
-    #     Plus, save that support {C:{variable_to_value}} so we can use the support
-    #     next time as long as it is still valid. 고쳐~~ 나중에 cash it
-    #     """
-    #     # explored_val = dict()
-    #     ConstraintC = AllConstraints[C]
-    #     if unassigned is None:
-    #         unassigned = copy(ConstraintC.variables_to_consider)
-    #
-    #     unassigned = unassigned.difference(decided)
-    #     # for fixed_variable in decided:
-    #     #     if fixed_variable in unassigned:
-    #     #         unassigned.remove(fixed_variable)
-    #
-    #     if len(unassigned) == 0:
-    #         if ConstraintC.valid_with_these_values(decided):
-    #             self.save_support(C, decided)
-    #             return True
-    #         return False
-    #
-    #     # so there are at least one of each assigned and unassigned variables.
-    #     for support_before in self.cashed_supports[C]:
-    #         this_support_match = True
-    #         for dec_vari in decided:
-    #             dec_val = decided[dec_vari]
-    #             if support_before.variable_to_value[dec_vari] != dec_val:
-    #                 this_support_match = False
-    #                 break
-    #         if this_support_match:
-    #             if not self._is_support_valid(C, support_before):
-    #                 continue
-    #             else:
-    #                 # print("previously found support was used.")
-    #                 return True
-    #
-    #     v = self.pick_unassigned_variable(unassigned)  # pickunassignedvariable
-    #     # explored_val[v] = set()
-    #     decided[v] = None
-    #
-    #     for val in self.CurDoms[v]:
-    #         # if val in explored_val[v]:
-    #         #     continue
-    #         # explored_val[v].add(val)
-    #         decided[v] = val
-    #         if len(unassigned) == 0:
-    #             if ConstraintC.valid_with_these_values(decided):
-    #                 self.save_support(C, decided)
-    #                 return True
-    #             else:
-    #                 continue
-    #         elif self.find_current_support(C, decided, unassigned):
-    #             return True
-    #     unassigned.add(v)
-    #     del (decided[v])
-    #     return False
-
+        
 
 class Ship(object):
     """
@@ -291,17 +94,18 @@ class Ship(object):
         can be exactly ship_kind 만큼의 cells
         eg. for submarine,(ship_kind=1)
 
-    head = occupied 중에서 L, T, 혹은 S(for submarine) 인 포지션.
-    tail = occupied 중에서 R, B, 혹은 S 인 포지션.
+    head = Occupied position that is either L, T, or S(for submarine).
+    tail = Occupied position that is either R, B, or S.
 
         """
 
     def __init__(self, constraints_to_consider: set):
         """
         th_ship = (1,..., total_ships)
-        Dom은 occupied짝tuple이 갈 수 있는 곳.
-        Submarine은 H하나만 있고
-        나머지는 H와 V가 키입니다.
+        Recall:
+        Dom is where occupied pair tuple can be located.
+        Submarine is where there is only one H,
+        remainders are H or V.
         maps orientation to possible domain
         """
         counting[0] += 1
@@ -309,7 +113,6 @@ class Ship(object):
         self.Dom = set()
         self.constraints_to_consider = constraints_to_consider
 
-        # 안 되면 curdom으로 {d:True, 11: False}로 해보덩가
 
     def add_constraints_to_consider(self, constraint_hash: int):
         """This is for adding constraints to consider, especially the
@@ -373,66 +176,6 @@ class Constraint(object):
 
 
 # ------------------------- ROW COLUMN Constraints------------------------------
-# NEED TO BUILD n of each rowconstraints and col constraints. so 2n개 total
-# # 각각 n개의 row constraints, col constraint 필요.
-# class RowConstraint(Constraint):
-#     def __init__(self, row_num: int, row_value: int):
-#         self.row_num = row_num
-#         self.row_value = row_value
-#         variables_to_consider = ALL_HASHES
-#         super().__init__(variables_to_consider)
-#
-#     def valid_with_these_values(self, variable_to_value: dict):
-#         total = 0
-#         for variable in self.variables_to_consider:
-#             assignedOrientation, assignedPositionsTuple = variable_to_value[
-#                 variable]
-#             if assignedOrientation == H:
-#                 if assignedPositionsTuple[0] // 10 == self.row_num:
-#                     total += HASHtoKIND[variable]
-#             else:
-#                 head = assignedPositionsTuple[0] // 10
-#                 if head <= self.row_num and self.row_num <= head+HASHtoKIND[variable]-1:
-#                     total += 1
-#             if total > self.row_value:
-#                 return False
-#         return total == self.row_value
-#
-#     def __str__(self):
-#         return f"{self.row_num}th Row Constraint"
-#
-#     def __hash__(self):
-#         return 1000 + self.row_num
-#
-#
-# class ColConstraint(Constraint):
-#     def __init__(self, col_num: int, col_value: int):
-#         self.col_num = col_num
-#         self.col_value = col_value
-#         variables_to_consider = ALL_HASHES
-#         super().__init__(variables_to_consider)
-#
-#     def valid_with_these_values(self, variable_to_value: dict):
-#         total = 0
-#         for variable in self.variables_to_consider:
-#             assignedOrientation, assignedPositionsTuple = variable_to_value[
-#                 variable]
-#             if assignedOrientation == V:
-#                 if assignedPositionsTuple[0] % 10 == self.col_num:
-#                     total += HASHtoKIND[variable]
-#             else:
-#                 head = assignedPositionsTuple[0] % 10
-#                 if head <= self.col_num and self.col_num <= head+HASHtoKIND[variable]-1:
-#                     total += 1
-#             if total > self.col_value:
-#                 return False
-#         return total == self.col_value
-#
-#     def __str__(self):
-#         return f"{self.col_num}th Col Constraint"
-#
-#     def __hash__(self):
-#         return 2000 + self.col_num
 
 class SRowConstraint(Constraint):
     """EACH SHIP 마다 하나씩. 유너리."""
@@ -443,10 +186,10 @@ class SRowConstraint(Constraint):
     def valid_with_these_values(self, variable_to_value: dict, level:Level):
         assignedOrientation, assignedPositionsTuple = variable_to_value[self.ship1]
         y = assignedPositionsTuple[0] // 10
-        if level.row_dict[y] - 1 < 0:  # < ROW: H: 나의 크기 V: 나의 한 개
+        if level.row_dict[y] - 1 < 0:  # < ROW: H: my size V: my one unit size
             return False
         else:
-            level.row_dict[y] -= 1  # 이거 놓을 거니까 빼기.
+            level.row_dict[y] -= 1  # Remove it as I am putting this piece
             return True
 
     def __str__(self):
@@ -465,20 +208,19 @@ class DRowConstraint(Constraint):
     def valid_with_these_values(self, variable_to_value: dict, level:Level):
         assignedOrientation, assignedPositionsTuple = variable_to_value[self.ship1]
         head_y = assignedPositionsTuple[0] // 10
-        if assignedOrientation == H:  # horizontally placing, row. H+R 크기 V+C 크기
-            if level.row_dict[head_y] - 2 < 0:  # < ROW: H: 나의 크기 V: 나의 한 개
+        if assignedOrientation == H:  # horizontally placing, row. H+R size V+C size
+            if level.row_dict[head_y] - 2 < 0:  # < ROW: H: my size V: my one unit size
                 return False
             else:
-                level.row_dict[head_y] -= 2  # 이거 놓을 거니까 빼기.
+                level.row_dict[head_y] -= 2  # Remove it as I am putting this piece
                 return True
-        else:  # vertically placing, and row여서. horizontally column도 한 개.
-            # -------------- 헤드 포함 모든 피쓰를 컨시더. ----------------------------
-            # tail_y = assignedPositionsTuple[-1] // 10  # 고쳐 내가 계산할 수 있음
+        else:  # Cuz vertically placing, and row. horizontally column.
+            # -------------- Consider all pieces including header. ----------------------------
             tail_y = head_y + 1
             for piece_pos in assignedPositionsTuple:
-                if level.row_dict[piece_pos//10] - 1 < 0:  # < ROW: H: 나의 크기 V: 나의 한 개
+                if level.row_dict[piece_pos//10] - 1 < 0:  # < ROW: H: whole piece size V: one unit size
                     return False
-            # if fully_succeeded:  # all piece로 이 경우 head, tail
+            # if fully_succeeded:  # In all piece case, head, tail
             level.row_dict[head_y] -= 1
             level.row_dict[tail_y] -= 1
             return True
@@ -491,7 +233,7 @@ class DRowConstraint(Constraint):
 
 
 class CRowConstraint(Constraint):
-    """EACH SHIP 마다 하나씩. 유너리."""
+    """one per EACH SHIP. Unary constraint"""
     def __init__(self, ship1:int):
         self.ship1 = ship1
         super().__init__({ship1})
@@ -499,21 +241,20 @@ class CRowConstraint(Constraint):
     def valid_with_these_values(self, variable_to_value: dict, level:Level):
         assignedOrientation, assignedPositionsTuple = variable_to_value[self.ship1]
         head_y = assignedPositionsTuple[0] // 10
-        if assignedOrientation == H:  # horizontally placing, row. H+R 크기 V+C 크기
-            if level.row_dict[head_y] - 3 < 0:  # < ROW: H: 나의 크기 V: 나의 한 개
+        if assignedOrientation == H:  # horizontally placing, row. H+R size V+C size
+            if level.row_dict[head_y] - 3 < 0:  # < ROW: H: size V: unit size
                 return False
             else:
-                level.row_dict[head_y] -= 3  # 이거 놓을 거니까 빼기.
+                level.row_dict[head_y] -= 3  # Remove it as I am putting the piece
                 return True
         else:  # vertically placing, and row여서. horizontally column도 한 개.
-            # -------------- 헤드 포함 모든 피쓰를 컨시더. ----------------------------
-            # tail_y = assignedPositionsTuple[-1] // 10  # 고쳐 내가 계산할 수 있음
+            # -------------- Consider all pieces including header. ----------------------------
             m_y = head_y + 1
             tail_y = head_y + 2
             for piece_pos in assignedPositionsTuple:
-                if level.row_dict[piece_pos//10] - 1 < 0:  # < ROW: H: 나의 크기 V: 나의 한 개
+                if level.row_dict[piece_pos//10] - 1 < 0:  # < ROW: H: size V: one unit size
                     return False
-            # if fully_succeeded:  # all piece로 이 경우 head, tail
+            # if fully_succeeded:  # In all piece case, head and tail
             level.row_dict[head_y] -= 1
             level.row_dict[m_y] -= 1
             level.row_dict[tail_y] -= 1
@@ -905,7 +646,6 @@ class SubmarinePersonalSpace(Constraint):
             self.ship2]
         # HEAD personal space
         head = assignedPositionsTuple1[0]
-        # 걍 한 번에 셋으로 만드는 게 더 빠를까? 한 번 봐봐 고쳐
         for ship2pos in assignedPositionsTuple2:
             if head % 10 != 0 and head-11 == ship2pos:
                 # print(f"{assignedPositionsTuple1} Touching {assignedPositionsTuple2}")
@@ -969,8 +709,7 @@ class DestroyerPersonalSpace(Constraint):
         assignedOrientation2, assignedPositionsTuple2 = variable_to_value[
             self.ship2]
         # HEAD personal space
-        head = assignedPositionsTuple1[0]
-        # 걍 한 번에 셋으로 만드는 게 더 빠를까? 한 번 봐봐 고쳐
+        head = assignedPositionsTuple1[0]=
         personal_space = set()
         for pc1 in assignedPositionsTuple1:
             if pc1 % 10 != 0 and pc1 % 10 != n-1:
@@ -1607,10 +1346,10 @@ while len(stack) > 0:
     # here, num_middle_tail is 1, so destroyer needs
     # FOR HORIZONTAL:
     for i in range(n):
-        if row_constraint[i] < 2:  # < H: 나의 크기 V: 나의 한 개
+        if row_constraint[i] < 2:  # < H: longest side size V: one unit size
             continue
         for j in range(n - num_middle_tail):
-            if col_constraint[j] < 1:  # < H: 나의 한 개 V: 나의 크기
+            if col_constraint[j] < 1:  # < H: one unit size V: longest side size
                 continue
             head = 10 * i + j
             tail = head + 1
@@ -1635,10 +1374,10 @@ while len(stack) > 0:
                             a_ship.add_possible_pos((H, pair))
     # FOR VERTICAL:
     for i in range(n - num_middle_tail):
-        if row_constraint[i] < 1:  # < H: 나의 크기 V: 나의 한 개
+        if row_constraint[i] < 1:  # < H: longest side size V: one unit size
             continue
         for j in range(n):
-            if col_constraint[j] < 2:  # < H: 나의 한 개 V: 나의 크기
+            if col_constraint[j] < 2:  # < H: one unit size V: longest side size
                 continue
             head = 10 * i + j
             tail = head + 10
@@ -1705,10 +1444,10 @@ while len(stack) > 0:
     num_middle_tail = (3 - 1)
     # FOR HORIZONTAL:
     for i in range(n):
-        if row_constraint[i] < 3:  # < H: 나의 크기 V: 나의 한 개
+        if row_constraint[i] < 3:  # < H: longest side size V: one unit size
             continue
         for j in range(n - num_middle_tail):
-            if col_constraint[j] < 1:  # < H: 나의 한 개 V: 나의 크기
+            if col_constraint[j] < 1:  # < H: one unit size V: longest side size
                 continue
             head = 10 * i + j
             middle = head + 1
@@ -1739,10 +1478,10 @@ while len(stack) > 0:
 
     # FOR VERTICAL:
     for i in range(n - num_middle_tail):
-        if row_constraint[i] < 1:  # < H: 나의 크기 V: 나의 한 개
+        if row_constraint[i] < 1:  # < H: longest side size V: one unit size
             continue
         for j in range(n):
-            if col_constraint[j] < 3:  # < H: 나의 한 개 V: 나의 크기
+            if col_constraint[j] < 3:  # < H: one unit size V: longest side size
                 continue
             head = 10 * i + j
             middle = head + 10
@@ -1813,10 +1552,10 @@ while len(stack) > 0:
     num_middle_tail = (4 - 1)  # 고쳐
     # FOR HORIZONTAL:
     for i in range(n):
-        if row_constraint[i] < 4:  # < H: 나의 크기 V: 나의 한 개
+        if row_constraint[i] < 4:  # < H: longest side size V: one unit size
             continue
         for j in range(n - num_middle_tail):
-            if col_constraint[j] < 1:  # < H: 나의 한 개 V: 나의 크기
+            if col_constraint[j] < 1:  # < H: one unit size V: longest side size
                 continue
             head = 10 * i + j
             m1 = head + 1
@@ -1853,10 +1592,10 @@ while len(stack) > 0:
                                             a_ship.add_possible_pos((H, pair))
     # FOR VERTICAL:
     for i in range(n - num_middle_tail):
-        if row_constraint[i] < 1:  # < H: 나의 크기 V: 나의 한 개
+        if row_constraint[i] < 1:  # < H: longest side size V: one unit size
             continue
         for j in range(n):
-            if col_constraint[j] < 4:  # < H: 나의 한 개 V: 나의 크기
+            if col_constraint[j] < 4:  # < H: one unit size V: longest side size
                 continue
             head = 10 * i + j
             m1 = head + 10
@@ -1983,14 +1722,9 @@ def FC(level: Level, assigned: dict, unassigned: set):
     if len(unassigned) == 0:
         return assigned
     Y = level.pick_unassigned_variable(unassigned)
-    # print("----------------------------------------")
-    # # print(f"depth: {depth[0]}")
-    # print(f"assigned {assigned}")
     assigned[Y] = None
-    unassigned = unassigned.difference(assigned)  #  고쳐 하나만 빼도 되나?? 191
+    unassigned = unassigned.difference(assigned) 
     TriedByMe = set()
-    #unassigned.remove(Y)  # 191
-    # print(f"assigning {Y} in {level.CurDoms[Y]}")
     RowDictSaver = deepcopy(level.row_dict)  # 191 deep -> copy
     ColDictSaver = deepcopy(level.col_dict)  # 191 deep -> copy
     for d in level.CurDoms[Y]:
@@ -2009,9 +1743,7 @@ def FC(level: Level, assigned: dict, unassigned: set):
                 Occupied = Occupied.union(d[1])
             else:
                 continue
-        # print(f"{kind_determiner1(Y)}={d[1]}")
-        # supporthash = Support(assigned, d).hashnum
-        # CurDomSaver[supporthash] = deepcopy(level.CurDoms)
+        
         CurDomSaver = deepcopy(level.CurDoms)
 
         assigned[Y] = d
@@ -2038,7 +1770,6 @@ def FC(level: Level, assigned: dict, unassigned: set):
                             level.CurDoms = CurDomSaver  # 191 copy ->> no
                             level.row_dict = RowDictSaver  # 191 copy ->> no
                             level.col_dict = ColDictSaver  # 191 copy ->> no
-                            # KindTried.remove(d[1])
                             Occupied = Occupied.difference(d[1])
                             theresway = False
                             break
@@ -2079,22 +1810,14 @@ def FC(level: Level, assigned: dict, unassigned: set):
 
                 # depth[0] -= 1
         else:
-            # print(f"DWO: DOMAIN WIPE OUT by {kind_determiner1(Y)}={d[1]}")
-            # print(f"restoring {CurDomSaver.values()}")
             level.CurDoms = deepcopy(CurDomSaver)  # 191 copy ->> no
             level.row_dict = deepcopy(RowDictSaver)  # 191 copy ->> no
             level.col_dict = deepcopy(ColDictSaver)  # 191 copy ->> no
             # KindTried.remove(d[1])
             Occupied = Occupied.difference(d[1])
-            # level.CurDoms = CurDomSaver[supporthash]
-            # print(f"dom restored: {kind_determiner(Y)} {d}")
-            # print(level.CurDoms)
-        # print(f"ok so {d} didn't work.")
     del(assigned[Y])
     unassigned.add(Y)
     KindTried = KindTried.difference(TriedByMe)
-    # print(f"Tried all{kind_determiner1(Y)} backtrack!")
-    # depth[0] -= 1
     return None
 
 
@@ -2150,7 +1873,3 @@ with open(output_filename, 'w') as output_file:
     # write the outputs in exact format
     output_file.writelines(lisToString.rstrip())
     # slicing to get rid of the last new line.
-
-# end = time.time()
-# time_took = end - start
-# print('실행 시간: {}초'.format(time_took))
