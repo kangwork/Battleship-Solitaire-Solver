@@ -25,20 +25,22 @@ python3 battle.py <input file> <output file>
 Assuming that input files are in correct formats as described below, the solver is expected to solve the puzzle on the output file if we run this command, within at most 5 minutes.
 
 
-## Example Input Format:
+## Input Format:
 
-Row constraints on the first line.
-Column constraints on the second line.
-Ship counts on the third line.
-Remaining lines represent the starting layout of the puzzle.
-Characters: '0', 'S', 'W', 'L', 'R', 'T', 'B', 'M'.
+1. Row constraints on the first line.
+2. Column constraints on the second line.
+3. Ship counts on the third line.
 
-## Example Output Format:
+4. Remaining lines represent the starting layout of the puzzle.
+  Characters: '0', 'S', 'W', 'L', 'R', 'T', 'B', 'M'.
+
+## Output Format:
 
 Similar format to the input, with the final solution printed.
 Each character represents a cell in the solution grid.
 
 ## Example Input and Output:
+
 Input:
 211222
 140212
