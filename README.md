@@ -41,7 +41,7 @@ Each character represents a cell in the solution grid.
 
 ## Example Input and Output:
 
-Input:<br /><br />
+Input:<br />
 211222<br />
 140212<br />
 321<br />
@@ -52,7 +52,7 @@ Input:<br /><br />
 00000W <br />
 000000 <br />
 
-Output:<br /><br />
+Output:<br />
 LRWWWW<br />
 WWWWSW<br />
 WTWWWW<br />
