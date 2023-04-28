@@ -53,12 +53,12 @@ Input:
 000000 <br />
 
 Output:
-LRWWWW
-WWWWSW
-WTWWWW
-WMWWWS
-WBWTWW
-WWWBWS
+LRWWWW<br />
+WWWWSW<br />
+WTWWWW<br />
+WMWWWS<br />
+WBWTWW<br />
+WWWBWS<br />
 
 ## Note
 This project was for a course CSC384H1: Introduction to Artificial Intelligence.
