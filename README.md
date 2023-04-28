@@ -42,15 +42,15 @@ Each character represents a cell in the solution grid.
 ## Example Input and Output:
 
 Input:
-211222
-140212
-321
-000000
-0000S0
-000000
-000000
-00000W
-000000
+211222<br />
+140212<br />
+321<br />
+000000<br />
+0000S0 <br />
+000000 <br />
+000000 <br />
+00000W <br />
+000000 <br />
 
 Output:
 LRWWWW
