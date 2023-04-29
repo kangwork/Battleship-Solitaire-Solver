@@ -5,7 +5,7 @@ A friendly AI will solve a Battleship Solitaire puzzle for you! (CSP)
 
 This project was to implement a Constraint Satisfaction Problem solver for the domain of Battleship Solitaire puzzles, using forward checking, general arc consistency, and backtracking search.
 
-To fully understand the puzzle, here are links to the more detailed description Battleship (puzzle) - Wikipedia and the website that you can play games of battleship solitaire for free Battleship Solitaire: Mindless Podcast Companion.
+To fully understand the puzzle, here are links to the more detailed description [Battleship (puzzle) - Wikipedia](https://en.wikipedia.org/wiki/Battleship_(puzzle)) and the website that you can play games of battleship solitaire for free [Battleship Solitaire: Mindless Podcast Companion](https://lukerissacher.com/battleships).
 
 Basically, the main rules we follow are:
 
